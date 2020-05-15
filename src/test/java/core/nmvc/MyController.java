@@ -3,6 +3,7 @@ package core.nmvc;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import core.mvc.LegacyHandlerMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,9 +14,8 @@ import core.mvc.JspView;
 import core.mvc.ModelAndView;
 
 /**
- * 1.
  * 9장에서 만들었던 MVC 프레임워크에 아쉬운점이 있다.
- * - 새로운 컨트롤러가 추가될때마다 {@link core.mvc.RequestMapping} 클래스에 요청 URL과 컨트롤러를 추가해야함. (귀찮음)
+ * - 새로운 컨트롤러가 추가될때마다 {@link LegacyHandlerMapping} 클래스에 요청 URL과 컨트롤러를 추가해야함. (귀찮음)
  * - URL 맵핑할 때 HTTP 메소드도 같이 맵핑하면 좋을것같음.
  *
  * 아래 처럼 개선되면 좋을것 같다.
