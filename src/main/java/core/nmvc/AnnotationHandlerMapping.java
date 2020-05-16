@@ -1,6 +1,9 @@
 package core.nmvc;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +21,7 @@ public class AnnotationHandlerMapping {
     }
 
     public void initialize() {
-
+        final Map<Class<?>, Object> controllers = ControllerScanner.scan();
     }
 
     public HandlerExecution getHandler(HttpServletRequest request) {
