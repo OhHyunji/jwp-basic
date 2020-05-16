@@ -2,8 +2,6 @@ package core.nmvc;
 
 import core.annotation.Controller;
 import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
