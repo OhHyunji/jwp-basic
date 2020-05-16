@@ -10,15 +10,18 @@ import com.google.common.collect.Maps;
 
 import core.annotation.RequestMapping;
 import core.annotation.RequestMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link core.mvc.LegacyHandlerMapping} 에서는 Map의 key로 url을 사용했지만,
  * {@link AnnotationHandlerMapping} 에서는 Map의 key로 (url, HTTP method)조합 {@link HandlerKey}를 사용한다.
  */
 public class AnnotationHandlerMapping implements HandlerMapping {
-    private Object[] basePackage;
+    private static final Logger logger = LoggerFactory.getLogger(AnnotationHandlerMapping.class);
 
-    private Map<HandlerKey, HandlerExecution> handlerExecutions = Maps.newHashMap();
+    private final Object[] basePackage;
+    private final Map<HandlerKey, HandlerExecution> handlerExecutions = Maps.newHashMap();
 
     public AnnotationHandlerMapping(Object... basePackage) {
         this.basePackage = basePackage;
@@ -47,7 +50,6 @@ public class AnnotationHandlerMapping implements HandlerMapping {
     }
 
     private Stream<_RequestMappingElement> toRequestMappingElements(Map.Entry<Class<?>, Object> entry) {
-
         final Class<?> controller = entry.getKey();
         final Object controllerInstance = entry.getValue();
 
@@ -57,9 +59,9 @@ public class AnnotationHandlerMapping implements HandlerMapping {
     }
 
     private class _RequestMappingElement {
-        private Object instance;
-        private Method method;
-        private RequestMapping requestMapping;
+        private final Object instance;
+        private final Method method;
+        private final RequestMapping requestMapping;
 
         public _RequestMappingElement(Object instance, Method method, RequestMapping requestMapping) {
             this.instance = instance;
@@ -68,6 +70,7 @@ public class AnnotationHandlerMapping implements HandlerMapping {
         }
 
         public HandlerKey createHandlerKey() {
+            logger.debug("create HandlerKey. url: {}, method: {}", requestMapping.value(), requestMapping.method());
             return new HandlerKey(requestMapping.value(), requestMapping.method());
         }
 
