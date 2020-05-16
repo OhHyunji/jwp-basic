@@ -8,6 +8,7 @@ import next.dao.UserDao;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 
+@Deprecated
 public class ListUserController extends AbstractController {
     private UserDao userDao = UserDao.getInstance();
 
