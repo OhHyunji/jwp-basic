@@ -11,6 +11,10 @@ import com.google.common.collect.Maps;
 import core.annotation.RequestMapping;
 import core.annotation.RequestMethod;
 
+/**
+ * {@link core.mvc.LegacyHandlerMapping} 에서는 Map의 key로 url을 사용했지만,
+ * {@link AnnotationHandlerMapping} 에서는 Map의 key로 (url, HTTP method)조합 {@link HandlerKey}를 사용한다.
+ */
 public class AnnotationHandlerMapping implements HandlerMapping {
     private Object[] basePackage;
 

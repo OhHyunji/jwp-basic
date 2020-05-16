@@ -16,6 +16,10 @@ public class HandlerKey {
         return "HandlerKey [url=" + url + ", requestMethod=" + requestMethod + "]";
     }
 
+    /**
+     * HashMap key로 사용하기 위해 hashCode(), equals() 메소드를 반드시 구현한다.
+     */
+
     @Override
     public int hashCode() {
         final int prime = 31;
