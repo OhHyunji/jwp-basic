@@ -47,28 +47,36 @@ public class DispatcherServlet extends HttpServlet {
         String requestUri = req.getRequestURI();
         logger.debug("Method : {}, Request URI : {}", req.getMethod(), requestUri);
 
-        try {
-            final Object handler = findHandler(req);
+        final Object handler = findHandler(req);
+        if(Objects.isNull(handler)) {
+            throw new IllegalArgumentException("존재하지 않는 URL입니다.");
+        }
 
-            if(handler instanceof AbstractController) {
-                AbstractController abstractController = (AbstractController) handler;
-                ModelAndView modelAndView = abstractController.execute(req, resp);
-                render(req, resp, modelAndView);
-            } else if (handler instanceof HandlerExecution) {
-                HandlerExecution handlerExecution = (HandlerExecution) handler;
-                ModelAndView modelAndView = handlerExecution.handle(req, resp);
-                render(req, resp, modelAndView);
-            } else {
-                throw new IllegalStateException("Unsupported handler: " + handler);
-            }
+        try {
+            ModelAndView modelAndView = execute(handler, req, resp);
+            render(req, resp, modelAndView);
         } catch (Throwable e) {
             logger.error("Exception: ", e);
             throw new ServletException(e.getMessage());
         }
 
-        // TODO[az] 기존 컨트롤러를 새로 추가한 애노테이션 기반으로 설정 후
-        //  정상적으로 동작하는지 테스트
-        //  테스트에 성공하면 기존 컨틀로러를 새로운 mVC 프레임워크로 점진적으로 변경
+        /**
+         * 여기까지 통합작업을 완료했으면 기존에 컨트롤러를 annotation 컨트롤러 기반으로 변경한다.
+         * 이렇게 통합할 경우 기존 컨트롤러에 대한 지원도 가능하면서
+         * 새로 추가한 annotation 컨트롤러 지원도 가능하기 때문에 점진적인 리팩토링이 가능하다.
+         */
+    }
+
+    private ModelAndView execute(Object handler, HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        if(handler instanceof AbstractController) {
+            AbstractController abstractController = (AbstractController) handler;
+            return abstractController.execute(req, resp);
+        } else if (handler instanceof HandlerExecution) {
+            HandlerExecution handlerExecution = (HandlerExecution) handler;
+            return handlerExecution.handle(req, resp);
+        } else {
+            throw new IllegalStateException("Unsupported handler: " + handler);
+        }
     }
 
     private Object findHandler(HttpServletRequest req) {
