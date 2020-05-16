@@ -2,6 +2,7 @@ package core.mvc;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -49,15 +50,19 @@ public class DispatcherServlet extends HttpServlet {
         logger.debug("Method : {}, Request URI : {}", req.getMethod(), requestUri);
 
         try {
-            // legacy
-            Controller controller = legacyHandlerMapping.findController(req.getRequestURI());
-            if(controller != null) {
-                render(req, resp, controller.execute(req, resp));
-            }
+            final Object handler = findHandler(req);
 
-            // annotation
-            HandlerExecution handler = annotationHandlerMapping.getHandler(req);
-            render(req, resp, handler.handle(req, resp));
+            if(handler instanceof AbstractController) {
+                AbstractController abstractController = (AbstractController) handler;
+                ModelAndView modelAndView = abstractController.execute(req, resp);
+                render(req, resp, modelAndView);
+            } else if (handler instanceof HandlerExecution) {
+                HandlerExecution handlerExecution = (HandlerExecution) handler;
+                ModelAndView modelAndView = handlerExecution.handle(req, resp);
+                render(req, resp, modelAndView);
+            } else {
+                throw new IllegalStateException("Unsupported handler: " + handler);
+            }
         } catch (Throwable e) {
             logger.error("Exception: ", e);
             throw new ServletException(e.getMessage());
@@ -66,6 +71,10 @@ public class DispatcherServlet extends HttpServlet {
         // TODO[az] 기존 컨트롤러를 새로 추가한 애노테이션 기반으로 설정 후
         // 정상적으로 동작하는지 테스트
         // 테스트에 성공하면 기존 컨틀로러를 새로운 mVC 프레임워크로 점진적으로 변경
+    }
+
+    private Object findHandler(HttpServletRequest req) {
+        return handlerMappings.stream().map(m -> m.getHandler(req)).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     private void render(HttpServletRequest req, HttpServletResponse resp, ModelAndView mav) throws Exception {
