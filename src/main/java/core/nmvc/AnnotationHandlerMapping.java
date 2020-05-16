@@ -11,7 +11,7 @@ import com.google.common.collect.Maps;
 import core.annotation.RequestMapping;
 import core.annotation.RequestMethod;
 
-public class AnnotationHandlerMapping {
+public class AnnotationHandlerMapping implements HandlerMapping {
     private Object[] basePackage;
 
     private Map<HandlerKey, HandlerExecution> handlerExecutions = Maps.newHashMap();
@@ -34,6 +34,7 @@ public class AnnotationHandlerMapping {
                 .forEach(r -> handlerExecutions.put(r.createHandlerKey(), r.createHandlerExecution()));
     }
 
+    @Override
     public HandlerExecution getHandler(HttpServletRequest request) {
         String requestUri = request.getRequestURI();
         RequestMethod requestMethod = RequestMethod.valueOf(request.getMethod().toUpperCase());
