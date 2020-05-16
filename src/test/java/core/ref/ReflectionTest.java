@@ -11,6 +11,7 @@ import next.model.User;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,9 +59,18 @@ public class ReflectionTest {
     }
     
     @Test
-    public void privateFieldAccess() {
+    public void privateFieldAccess() throws IllegalAccessException, InstantiationException, NoSuchFieldException {
         Class<Student> clazz = Student.class;
-        logger.debug(clazz.getName());
+        final Student student = clazz.newInstance();
+
+        final Field name = clazz.getDeclaredField("name");
+        name.setAccessible(true);
+        name.set(student, "아젤리아");
+        final Field age = clazz.getDeclaredField("age");
+        age.setAccessible(true);
+        age.setInt(student, 29);
+
+        logger.debug(student.toString());
     }
 
     private List<String> toFieldNames(Field[] fields) {
