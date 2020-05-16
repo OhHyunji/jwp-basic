@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import next.model.Question;
 import next.model.User;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,9 +42,19 @@ public class ReflectionTest {
     }
     
     @Test
-    public void newInstanceWithConstructorArgs() {
+    public void newInstanceWithConstructorArgs() throws IllegalAccessException, InvocationTargetException, InstantiationException {
         Class<User> clazz = User.class;
-        logger.debug(clazz.getName());
+
+        final Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
+        final int allArgsCount = clazz.getDeclaredFields().length;
+        final Constructor<?> allArgsConstructor = Arrays.stream(declaredConstructors)
+                .filter(c -> c.getParameterCount() == allArgsCount)
+                .findFirst().orElseThrow(IllegalStateException::new);
+
+        final User user = (User) allArgsConstructor.newInstance("userId", "password", "userName", "user@gmail.com");
+
+        logger.debug("########## {} Instance ##########", clazz.getName());
+        logger.debug(user.toString());
     }
     
     @Test
