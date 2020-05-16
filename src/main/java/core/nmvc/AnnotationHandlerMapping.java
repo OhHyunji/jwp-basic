@@ -26,6 +26,7 @@ public class AnnotationHandlerMapping implements HandlerMapping {
      *  - HandlerKey: url, HTTP method
      *  - HandlerExecution: 실행할 method
      */
+    @Override
     public void initialize() {
         final Map<Class<?>, Object> controllers = ControllerScanner.scan();
 

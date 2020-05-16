@@ -1,6 +1,7 @@
 package core.mvc;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,9 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Lists;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import core.nmvc.AnnotationHandlerMapping;
 import core.nmvc.HandlerExecution;
+import core.nmvc.HandlerMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,18 +33,12 @@ public class DispatcherServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
-    private LegacyHandlerMapping legacyHandlerMapping;
-    private AnnotationHandlerMapping annotationHandlerMapping;
+    private List<HandlerMapping> handlerMappings = Lists.newArrayList();
 
     @Override
     public void init() throws ServletException {
-        // TODO[az] HandlerMapping List 초기화
-
-        legacyHandlerMapping = new LegacyHandlerMapping();
-        legacyHandlerMapping.initMapping();
-
-        annotationHandlerMapping = new AnnotationHandlerMapping("next.controller");
-        annotationHandlerMapping.initialize();
+        handlerMappings = Lists.newArrayList(new LegacyHandlerMapping(), new AnnotationHandlerMapping("next.controller"));
+        handlerMappings.forEach(HandlerMapping::initialize);
     }
 
     @Override
