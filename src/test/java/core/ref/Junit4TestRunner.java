@@ -2,7 +2,6 @@ package core.ref;
 
 import org.junit.Test;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
@@ -14,7 +13,7 @@ public class Junit4TestRunner {
         final Junit4Test junit4Test = clazz.newInstance();
 
         Arrays.stream(clazz.getMethods())
-                .filter(m -> Arrays.stream(m.getDeclaredAnnotations()).anyMatch(a ->a.annotationType().equals(MyTest.class)))
+                .filter(m -> m.isAnnotationPresent(MyTest.class))
                 .forEach(m -> {
                     try {
                         m.invoke(junit4Test );
