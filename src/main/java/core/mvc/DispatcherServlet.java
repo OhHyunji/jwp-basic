@@ -44,8 +44,6 @@ public class DispatcherServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        // TODO[az] HandlerMapping List 에서 요청 URL에 해당하는 컨트롤러를 찾아 메소드를 실행
         String requestUri = req.getRequestURI();
         logger.debug("Method : {}, Request URI : {}", req.getMethod(), requestUri);
 
@@ -69,8 +67,8 @@ public class DispatcherServlet extends HttpServlet {
         }
 
         // TODO[az] 기존 컨트롤러를 새로 추가한 애노테이션 기반으로 설정 후
-        // 정상적으로 동작하는지 테스트
-        // 테스트에 성공하면 기존 컨틀로러를 새로운 mVC 프레임워크로 점진적으로 변경
+        //  정상적으로 동작하는지 테스트
+        //  테스트에 성공하면 기존 컨틀로러를 새로운 mVC 프레임워크로 점진적으로 변경
     }
 
     private Object findHandler(HttpServletRequest req) {
