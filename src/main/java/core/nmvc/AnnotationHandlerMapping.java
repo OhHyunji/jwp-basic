@@ -28,7 +28,7 @@ public class AnnotationHandlerMapping implements HandlerMapping {
      */
     @Override
     public void initialize() {
-        final Map<Class<?>, Object> controllers = ControllerScanner.scan();
+        final Map<Class<?>, Object> controllers = new ControllerScanner(basePackage).getControllers();
 
         controllers.entrySet().stream()
                 .flatMap(this::toRequestMappingElements)
