@@ -38,7 +38,7 @@ public class DispatcherServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        handlerMappings = Lists.newArrayList(new LegacyHandlerMapping(), new AnnotationHandlerMapping("next.controller"));
+        handlerMappings = Lists.newArrayList(new LegacyHandlerMapping(), new AnnotationHandlerMapping("core.nmvc.controller"));
         handlerMappings.forEach(HandlerMapping::initialize);
     }
 
@@ -80,7 +80,11 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private Object findHandler(HttpServletRequest req) {
-        return handlerMappings.stream().map(m -> m.getHandler(req)).filter(Objects::nonNull).findFirst().orElse(null);
+        return handlerMappings.stream()
+                .map(m -> m.getHandler(req))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 URL입니다."));
     }
 
     private void render(HttpServletRequest req, HttpServletResponse resp, ModelAndView mav) throws Exception {
