@@ -14,17 +14,10 @@ import core.jdbc.PreparedStatementCreator;
 import core.jdbc.RowMapper;
 
 public class JdbcQuestionDao implements QuestionDao{
-    private static JdbcQuestionDao questionDao;
-    private JdbcTemplate jdbcTemplate = JdbcTemplate.getInstance();
+    private final JdbcTemplate jdbcTemplate;
 
-    private JdbcQuestionDao() {
-    }
-
-    public static JdbcQuestionDao getInstance() {
-        if (questionDao == null) {
-            questionDao = new JdbcQuestionDao();
-        }
-        return questionDao;
+    public JdbcQuestionDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

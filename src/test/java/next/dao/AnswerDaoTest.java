@@ -1,5 +1,6 @@
 package next.dao;
 
+import core.jdbc.JdbcTemplate;
 import next.model.Answer;
 
 import org.junit.Before;
@@ -26,7 +27,7 @@ public class AnswerDaoTest {
     public void addAnswer() throws Exception {
         long questionId = 1L;
         Answer expected = new Answer("javajigi", "answer contents", questionId);
-        AnswerDao dut = JdbcAnswerDao.getInstance();
+        AnswerDao dut = new JdbcAnswerDao(JdbcTemplate.getInstance());
         Answer answer = dut.insert(expected);
         log.debug("Answer : {}", answer);
     }
