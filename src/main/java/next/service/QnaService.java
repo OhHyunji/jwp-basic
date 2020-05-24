@@ -12,21 +12,12 @@ import next.model.Question;
 import next.model.User;
 
 public class QnaService {
-    private static QnaService qnaService;
-
     private final QuestionDao questionDao;
     private final AnswerDao answerDao;
 
-    private QnaService(QuestionDao questionDao, AnswerDao answerDao) {
+    public QnaService(QuestionDao questionDao, AnswerDao answerDao) {
         this.questionDao = questionDao;
         this.answerDao = answerDao;
-    }
-
-    public static QnaService getInstance(QuestionDao questionDao, AnswerDao answerDao) {
-        if (qnaService == null) {
-            qnaService = new QnaService(questionDao, answerDao);
-        }
-        return qnaService;
     }
 
     public Question findById(long questionId) {

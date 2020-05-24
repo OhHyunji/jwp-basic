@@ -19,7 +19,7 @@ public class QnaServiceTest {
     public void setUp() {
         mockQuestionDao = new MockQuestionDao();
         mockAnswerDao = new MockAnswerDao();
-        mockQnaService = QnaService.getInstance(mockQuestionDao, mockAnswerDao);
+        mockQnaService = new QnaService(mockQuestionDao, mockAnswerDao);
     }
 
     @Test(expected = CannotDeleteException.class)

@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import core.nmvc.HandlerMapping;
+import next.dao.JdbcAnswerDao;
+import next.dao.JdbcQuestionDao;
+import next.service.QnaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +21,6 @@ import next.controller.qna.DeleteQuestionController;
 import next.controller.qna.ShowQuestionController;
 import next.controller.qna.UpdateFormQuestionController;
 import next.controller.qna.UpdateQuestionController;
-import next.controller.user.CreateUserController;
-import next.controller.user.ListUserController;
 import next.controller.user.LoginController;
 import next.controller.user.LogoutController;
 import next.controller.user.ProfileController;
@@ -30,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class LegacyHandlerMapping implements HandlerMapping {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
-    private Map<String, Controller> mappings = new HashMap<>();
+    private final Map<String, Controller> mappings = new HashMap<>();
 
     @Override
     public void initialize() {
@@ -44,16 +45,17 @@ public class LegacyHandlerMapping implements HandlerMapping {
         // mappings.put("/users/create", new CreateUserController());
         mappings.put("/users/updateForm", new UpdateFormUserController());
         mappings.put("/users/update", new UpdateUserController());
-        mappings.put("/qna/show", new ShowQuestionController());
+        QnaService qnaService = new QnaService(JdbcQuestionDao.getInstance(), JdbcAnswerDao.getInstance());
+        mappings.put("/qna/delete", new DeleteQuestionController(qnaService));
+        mappings.put("/qna/show", new ShowQuestionController(JdbcQuestionDao.getInstance(), JdbcAnswerDao.getInstance()));
         mappings.put("/qna/form", new CreateFormQuestionController());
         mappings.put("/qna/create", new CreateQuestionController());
         mappings.put("/qna/updateForm", new UpdateFormQuestionController());
         mappings.put("/qna/update", new UpdateQuestionController());
-        mappings.put("/qna/delete", new DeleteQuestionController());
-        mappings.put("/api/qna/deleteQuestion", new ApiDeleteQuestionController());
+        mappings.put("/api/qna/deleteQuestion", new ApiDeleteQuestionController(qnaService));
         mappings.put("/api/qna/list", new ApiListQuestionController());
-        mappings.put("/api/qna/addAnswer", new AddAnswerController());
-        mappings.put("/api/qna/deleteAnswer", new DeleteAnswerController());
+        mappings.put("/api/qna/addAnswer", new AddAnswerController(JdbcQuestionDao.getInstance(), JdbcAnswerDao.getInstance()));
+        mappings.put("/api/qna/deleteAnswer", new DeleteAnswerController(JdbcAnswerDao.getInstance()));
 
         logger.info("Initialized Request Mapping!");
     }

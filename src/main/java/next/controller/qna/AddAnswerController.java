@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.controller.UserSessionUtils;
-import next.dao.JdbcAnswerDao;
-import next.dao.JdbcQuestionDao;
 import next.model.Answer;
 import next.model.Result;
 import next.model.User;
@@ -20,8 +18,13 @@ import next.model.User;
 public class AddAnswerController extends AbstractController {
     private static final Logger log = LoggerFactory.getLogger(AddAnswerController.class);
 
-    private final QuestionDao questionDao = JdbcQuestionDao.getInstance();
-    private final AnswerDao answerDao = JdbcAnswerDao.getInstance();
+    private final QuestionDao questionDao;
+    private final AnswerDao answerDao;
+
+    public AddAnswerController(QuestionDao questionDao, AnswerDao answerDao) {
+        this.questionDao = questionDao;
+        this.answerDao = answerDao;
+    }
 
     @Override
     public ModelAndView execute(HttpServletRequest req, HttpServletResponse response) throws Exception {
