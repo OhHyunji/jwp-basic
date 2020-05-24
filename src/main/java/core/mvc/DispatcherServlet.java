@@ -48,9 +48,6 @@ public class DispatcherServlet extends HttpServlet {
         logger.debug("Method : {}, Request URI : {}", req.getMethod(), requestUri);
 
         final Object handler = findHandler(req);
-        if(Objects.isNull(handler)) {
-            throw new IllegalArgumentException("존재하지 않는 URL입니다.");
-        }
 
         try {
             ModelAndView modelAndView = execute(handler, req, resp);
