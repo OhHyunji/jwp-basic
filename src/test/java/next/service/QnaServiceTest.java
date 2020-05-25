@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class QnaServiceTest {
 
+    @InjectMocks
     private QnaService qnaService;
 
     @Mock
@@ -26,11 +27,6 @@ public class QnaServiceTest {
 
     @Mock
     private AnswerDao answerDao;
-
-    @Before
-    public void setUp() {
-        qnaService = new QnaService(questionDao, answerDao);
-    }
 
     @Test(expected = CannotDeleteException.class)
     public void deleteQuestion_notExist_questionId() throws CannotDeleteException {
