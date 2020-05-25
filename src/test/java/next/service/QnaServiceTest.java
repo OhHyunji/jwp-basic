@@ -7,43 +7,55 @@ import next.model.Question;
 import next.model.User;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Date;
 
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
 public class QnaServiceTest {
+
     private QnaService qnaService;
+
+    @Mock
     private QuestionDao questionDao;
+
+    @Mock
     private AnswerDao answerDao;
 
     @Before
     public void setUp() {
-        questionDao = new MockQuestionDao();
-        answerDao = new MockAnswerDao();
         qnaService = new QnaService(questionDao, answerDao);
     }
 
     @Test(expected = CannotDeleteException.class)
     public void deleteQuestion_notExist_questionId() throws CannotDeleteException {
-        qnaService.deleteQuestion(1L, newUser("az"));
+        long questionId = 1L;
+        when(questionDao.findById(questionId)).thenReturn(null);
+
+        qnaService.deleteQuestion(questionId, newUser("az"));
     }
 
     @Test(expected = CannotDeleteException.class)
     public void deleteQuestion_anotherUser() throws CannotDeleteException {
-        long mockQuestionId = 1;
-        Question question = newQuestion(mockQuestionId, "az");
-        questionDao.insert(question);
+        long questionId = 1;
+        when(questionDao.findById(questionId)).thenReturn(newQuestion(questionId, "az"));
 
-        qnaService.deleteQuestion(mockQuestionId, newUser("olaf"));
+        qnaService.deleteQuestion(questionId, newUser("olaf"));
     }
 
     @Test
-    public void deleteQuestion_notExist_sameWriter() throws CannotDeleteException {
-        long mockQuestionId = 1;
-        Question question =  newQuestion(mockQuestionId, "az");
-        questionDao.insert(question);
+    public void deleteQuestion_ok() throws CannotDeleteException {
+        long questionId = 1;
+        when(questionDao.findById(questionId)).thenReturn(newQuestion(questionId, "az"));
 
-        qnaService.deleteQuestion(mockQuestionId, newUser("az"));
+        qnaService.deleteQuestion(questionId, newUser("az"));
     }
+
 
     private Question newQuestion(long questionId, String userId) {
         return new Question(questionId, userId, "title", "contents", new Date(), 0);
