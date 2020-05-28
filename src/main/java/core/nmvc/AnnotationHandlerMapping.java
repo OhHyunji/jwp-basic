@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 
 import core.annotation.RequestMapping;
 import core.annotation.RequestMethod;
+import core.di.factory.BeanFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,10 @@ public class AnnotationHandlerMapping implements HandlerMapping {
      */
     @Override
     public void initialize() {
-        final Map<Class<?>, Object> controllers = new ControllerScanner(basePackage).getControllers();
+        BeanScanner beanScanner = new BeanScanner(basePackage);
+        BeanFactory beanFactory = new BeanFactory(beanScanner.scan());
+        beanFactory.initialize();
+        Map<Class<?>, Object> controllers = beanFactory.getControllers();
 
         controllers.entrySet().stream()
                 .flatMap(this::toRequestMappingElements)
